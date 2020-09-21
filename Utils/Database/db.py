@@ -78,20 +78,48 @@ def insert_tweet(new_tweet):
             INSERT INTO tweets ( user_id, tweet )
             VALUES ( :id, :tweet )
             """
-    return database.execute(text(insert), new_tweet).rowcount
+    return database.execute(text(insert), new_tweet).lastrowid
+
+def get_tweet(old_tweet):
+    '''
+    SELECT old tweet from db.
+    old_tweet : dictionary. (*tweet_id)
+    '''
+    select = """
+            SELECT id, user_id, tweet, created_at
+            FROM tweets
+            WHERE id = :tweet_id
+            """
+    result = database.execute(text(select), old_tweet).fetchone()
+    return {'id': result['id'],
+            'user_id': result['user_id'],
+            'tweet': result['tweet'],
+            'create_at': result['created_at']} if result else None
+
+def delete_tweet(old_tweet):
+    '''
+    Delete old tweet from db.
+    old_tweet : dictionary. (*tweet_id)
+    '''
+    delete = """
+            DELETE FROM tweets
+            WHERE id = :tweet_id
+            """
+    result = database.execute(text(delete), old_tweet).rowcount
+    return result
 
 def get_timeline(user_id):
     '''
     SELECT timeline with user_id
-    user_id : dictionary. (*id)
+    user_id : dictionary. (*user_id)
     '''
 
     select = """
             SELECT t.user_id, t.tweet
             FROM tweets t
             LEFT JOIN users_follow_list ufl ON ufl.user_id = :user_id
-            WHERE t.user_id = :id
-            OR t.user_id = ufl.follow_user_id
+            WHERE t.user_id = :user_id
+            OR t.user_id = ufl.id_to_follow
             """
     # order by TIMESTAMP
     result = database.execute(text(select), user_id).fetchall()
