@@ -4,6 +4,7 @@
 ## written by python 3.x
 
 ## Dependencies
+
 ###flask
 > flask for http
 >
@@ -21,6 +22,16 @@
 > DBAPI of MySQL in python
 >
 ><code>pip install mysql-connector-python </code>
+
+### jwt
+> Json web token
+>
+><code>pip install jwt </code>
+
+### bcrypt
+> bcrypt for hashed password
+>
+><code>pip install bcrypt </code>
 
 ## Usage
 	Windows
